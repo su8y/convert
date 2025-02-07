@@ -10,17 +10,29 @@ repositories {
 
 ext {
 	proj4jVersion = "1.2.3"
+	geotoolsVersion = "31.0"
+	jacksonVersion = "2.15.0"
+	jtsVersion = "1.20.0"
 }
 
 dependencies {
-	api("org.geotools:gt-main:31.0")
-	implementation("org.locationtech.jts:jts-core:1.20.0")
+	api("org.geotools:gt-main:${geotoolsVersion}")
+	api("org.geotools:gt-geojson:${geotoolsVersion}")
+	api("org.locationtech.jts:jts-core:${jtsVersion}")
+	api("org.locationtech.jts.io:jts-io-common:${jtsVersion}")
 	implementation("org.locationtech.proj4j:proj4j:${proj4jVersion}")
 	implementation("org.locationtech.proj4j:proj4j-epsg:${proj4jVersion}")
+
+	implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+	implementation("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+	implementation("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
+
+	implementation("org.springframework:spring-core:5.2.25.RELEASE")
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
+
 
 test {
 	useJUnitPlatform()
