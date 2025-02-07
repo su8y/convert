@@ -1,0 +1,39 @@
+image: openjdk:17-alpine
+
+stages:
+  - build
+  - test
+
+variables:
+  GRADLE_OPTS: '-Dorg.gradle.daemon=false'
+
+.default-gradle-job:
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod +x ./gradlew
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - .gradle
+      - build
+
+build-gradle:
+  stage: build
+  extends: .default-gradle-job
+  script:
+    - ./gradlew --build-cache assemble
+
+linting:
+  stage: test
+  extends: .default-gradle-job
+  script: ./gradlew check -X test
+
+test:
+  stage: test
+  extends: .default-gradle-job
+  script: ./gradlew test
+  artifacts:
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+    expire_in: 1 week

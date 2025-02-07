@@ -1,0 +1,27 @@
+plugins {
+	id "java-library"
+	id "checkstyle"
+}
+
+repositories {
+	maven { url "https://repo.osgeo.org/repository/release/" }
+	mavenCentral()
+}
+
+ext {
+	proj4jVersion = "1.2.3"
+}
+
+dependencies {
+	implementation("org.geotools:gt-main:31.0")
+	implementation("org.locationtech.jts:jts-core:1.20.0")
+	implementation("org.locationtech.proj4j:proj4j:${proj4jVersion}")
+	implementation("org.locationtech.proj4j:proj4j-epsg:${proj4jVersion}")
+
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+}
+
+test {
+	useJUnitPlatform()
+}
