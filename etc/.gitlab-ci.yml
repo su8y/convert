@@ -27,6 +27,10 @@ build-gradle:
   extends: .default-gradle-job
   script:
     - ./gradlew --build-cache assemble
+  artifacts:
+    paths:
+      - "build/libs/*"
+    expire_in: 1 hours
 
 linting:
   stage: test
