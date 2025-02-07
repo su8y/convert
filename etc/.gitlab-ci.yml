@@ -31,7 +31,7 @@ build-gradle:
 linting:
   stage: test
   extends: .default-gradle-job
-  script: ./gradlew check -X test
+  script: ./gradlew check -x test
 
 test:
   stage: test
@@ -39,7 +39,7 @@ test:
   script: ./gradlew test
   artifacts:
     reports:
-      junit: build/test-results/test/**/TEST-*.xml
+      junit: $CI_PROJECT_DIR/**/build/test-results/test/**/TEST-*.xml
     expire_in: 1 week
 
 # deploy

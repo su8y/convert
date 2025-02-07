@@ -3,6 +3,8 @@ plugins {
 	id "checkstyle"
 }
 
+jar.enabled = false
+
 allprojects {
 	group = 'org.jbt'
 	version = '0.0.1-SNAPSHOT'
