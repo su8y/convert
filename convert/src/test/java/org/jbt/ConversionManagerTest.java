@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.locationtech.proj4j.CRSFactory;
 
-class ConvertManagerTest {
+class ConversionManagerTest {
 
 	@Test
 	void testConvert() {
 		CRSFactory crsFactory = new CRSFactory();
-		ConvertManager convertManager = new ConvertManager();
-		Object result = convertManager.convert();
+		ConversionManager conversionManager = new ConversionManager();
+		Object result = conversionManager.convert();
 		assertNotNull(crsFactory);
 		assertNull(result);
 	}

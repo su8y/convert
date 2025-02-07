@@ -3,9 +3,13 @@ image: openjdk:17-alpine
 stages:
   - build
   - test
+  - deploy
 
 variables:
   GRADLE_OPTS: '-Dorg.gradle.daemon=false'
+  IMAGE_NAME: $CI_PROJECT_NAME/$CI_COMMIT_REF_NAME #deploy
+  IMAGE_NAME_LINE: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME #deploy
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA #deploy
 
 .default-gradle-job:
   before_script:
@@ -37,3 +41,41 @@ test:
     reports:
       junit: build/test-results/test/**/TEST-*.xml
     expire_in: 1 week
+
+# deploy
+push-image:
+  stage: deploy
+  when: on_success
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  before_script: |
+    echo "{\"auths\":{\"$REGISTRY_URL\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/etc/Dockerfile --destination $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG --insecure
+  only:
+    - main
+    - dev
+
+deploy-application:
+  image: dtzar/helm-kubectl:3.6.0
+  stage: deploy
+  when: on_success
+  before_script:
+    - mkdir -p $HOME/.kube
+    - echo "$KUBE_CONFIG" | base64 -d > $HOME/.kube/config
+  script:
+    - |
+      cat > values.yaml <<EOF
+      image:
+        repository: $IMAGE_NAME
+        tag: $IMAGE_TAG
+      EOF
+    - kubectl get namespaces $CI_PROJECT_NAME || kubectl create namespace $CI_PROJECT_NAME
+    - helm repo add --username $REGISTRY_USERNAME --password $ROOT_ACCESS_TOKEN chart-repo $PACKAGE_REGISTRY_URL/api/v4/projects/9/packages/helm/stable
+    - helm upgrade --install $IMAGE_NAME_LINE chart-repo/spring-application -f values.yaml -f $CI_PROJECT_DIR/etc/values.yaml -n $CI_PROJECT_NAME
+  only:
+    - main
+    - dev
+  needs:
+    - push-image

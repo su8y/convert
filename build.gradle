@@ -9,12 +9,11 @@ allprojects {
 	description = 'Geo Spatial Module of JBT Corp.'
 }
 
-
 subprojects {
-	apply plugin: 'checkstyle' // 하위 모듈에 Checkstyle 플러그인 적용
+	apply plugin: 'checkstyle' // 하위 프로젝트에서도 Checkstyle 플러그인 적용
 
 	checkstyle {
-		toolVersion = "10.12.4"
+		toolVersion = "10.21.2"
 		configFile = file("${rootDir}/etc/checkstyle.xml")
 		configProperties = ["suppressionFile": "etc/checkstyle-suppressions.xml"]
 		maxWarnings = 0

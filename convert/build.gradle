@@ -13,7 +13,7 @@ ext {
 }
 
 dependencies {
-	implementation("org.geotools:gt-main:31.0")
+	api("org.geotools:gt-main:31.0")
 	implementation("org.locationtech.jts:jts-core:1.20.0")
 	implementation("org.locationtech.proj4j:proj4j:${proj4jVersion}")
 	implementation("org.locationtech.proj4j:proj4j-epsg:${proj4jVersion}")
