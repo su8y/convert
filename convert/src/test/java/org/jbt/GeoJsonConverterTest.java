@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -79,10 +78,11 @@ class GeoJsonConverterTest {
 	}
 
 	/**
-	 * GeoJsonConverter로는 Feature와 FeatureCollection을 변환할 수 없다.
+	 * NOTE: GeoJsonConverter로는 Feature와 FeatureCollection을 변환할 수 없다.
 	 * Feature와 FeatureCollection은 GeoTools의 FeatureJSON을 사용해야 한다.
-	 */
-	@Disabled
+	 *
+	 * GeoJsonReader로 읽을시에는 Feature가 Geometry로 읽혀서 변환된다.
+	 * 이것은 즉 Property를 무시하고 Geometry만 변환한다는 것이다. */
 	@Test
 	@DisplayName("Point 좌표 투영 가져오는지 테스트")
 	void getProjectionTest() {
@@ -104,16 +104,24 @@ class GeoJsonConverterTest {
 								"coordinates": [1.0, 2.0]
 							},
 							"properties": {}
+						},
+						{
+							"type": "Feature",
+							"geometry": {
+								"type": "LineString",
+								"coordinates": [[1.0, 2.0],[3.0, 4.0]]
+							},
+							"properties": {}
 						}
 					]
 				}
 				""";
 
 		Geometry[] convert = converter.convert(geoJson);
-
 		Assertions.assertTrue(convert.length == 1);
-		Assertions.assertEquals("FeatureCollection", convert[0].getGeometryType());
 
+		GeometryCollection geometryCollection = (GeometryCollection)convert[0];
+		Assertions.assertEquals(2, geometryCollection.getNumGeometries());
+		Assertions.assertEquals(3857, geometryCollection.getSRID());
 	}
-
 }

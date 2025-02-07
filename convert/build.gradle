@@ -13,11 +13,17 @@ ext {
 	geotoolsVersion = "31.0"
 	jacksonVersion = "2.15.0"
 	jtsVersion = "1.20.0"
+	junitVersion = "5.7.0"
+	assertjVersion = "3.19.0"
+	mockitoVersion = "3.11.2"
 }
 
 dependencies {
 	api("org.geotools:gt-main:${geotoolsVersion}")
 	api("org.geotools:gt-geojson:${geotoolsVersion}")
+	api("org.geotools:gt-geojson-core:${geotoolsVersion}")
+	api("org.geotools:gt-csv:${geotoolsVersion}")
+
 	api("org.locationtech.jts:jts-core:${jtsVersion}")
 	api("org.locationtech.jts.io:jts-io-common:${jtsVersion}")
 	implementation("org.locationtech.proj4j:proj4j:${proj4jVersion}")
@@ -29,8 +35,11 @@ dependencies {
 
 	implementation("org.springframework:spring-core:5.2.25.RELEASE")
 
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+	testImplementation("org.assertj:assertj-core:${assertjVersion}")
+	testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+	testImplementation("org.mockito:mockito-junit-jupiter:${mockitoVersion}")
 }
 
 
